@@ -8,7 +8,8 @@ import os
 
 setting = {
     'database' : 'data/cnstock.db',
-    'folder' : 'csv'
+    'maxpe' : '1000',
+    'maxpb' : '100'
 }
 
 
@@ -19,10 +20,15 @@ setting = {
 
 
 def main():
-    build_db()
-    csvs = get_csv_list()
-    for csv in csvs:
-        load_csv(csv)
+    db =  sqlite3.connect(setting['database'])
+    cu = db.cursor()
+
+    sql = 'select date, ttmpe, pe, pb, adjclose from quota where ttmpe>0 and pe>0 and pb>0 and ttmpe<'+setting['maxpe']+' and pe<'+setting['maxpe']+' and pb<'+setting['maxpb']
+    cu.execute(sql)
+    rows = cu.fetchall()
+
+
+
 
 
 def get_value(strval):
