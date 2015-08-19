@@ -8,6 +8,7 @@ import os
 
 setting = {
     'database' : 'data/cnstock.db',
+    'all_market_value_file' : 'data/cn_all_market.csv',
     'maxpe' : '1000',
     'maxpb' : '100'
 }
@@ -23,9 +24,16 @@ def main():
     db =  sqlite3.connect(setting['database'])
     cu = db.cursor()
 
-    sql = 'select date, ttmpe, pe, pb, adjclose from quota where ttmpe>0 and pe>0 and pb>0 and ttmpe<'+setting['maxpe']+' and pe<'+setting['maxpe']+' and pb<'+setting['maxpb']
+    sql = 'select date, avg(ttmpe), avg(pe), avg(pb) from quota where ttmpe>0 and pe>0 and pb>0 and ttmpe<'+setting['maxpe']+' and pe<'+setting['maxpe']+' and pb<'+setting['maxpb']+' group by date order by date asc'
     cu.execute(sql)
     rows = cu.fetchall()
+    
+    f = open(setting['all_market_value_file'],'w')
+    f.write('date, ttmpe, pe, pb'+os.linesep)
+    for row in rows:
+        f.write(str(row[0])+','+str(row[1])+','+str(row[2])+','+str(row[3])+os.linesep)
+    f.flush()
+    f.close()
 
 
 
