@@ -57,9 +57,6 @@ def load_csv(csv):
     
     db =  sqlite3.connect(setting['database'])
     cu = db.cursor()
-
-    sql = 'delete from quota'
-    cu.execute(sql)
     
     skipfirstline = True
     processid = ''
